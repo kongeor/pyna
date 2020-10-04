@@ -1,0 +1,17 @@
+<!doctype html>
+<title>News</title>
+
+
+<h1>News</h1>
+
+{% for headline in headlines %}
+	<div class="headline">
+		<h2>{{ headline.title }}</h2>
+		<div>{{ headline.published_at }}</div>
+		{% if headline.description %}
+		<div class="description">{{ headline.description }}</div>
+		{% endif %}
+		<a href="{{ headline.url }} ">link</a>
+		<hr>
+	</div>
+{% endfor %}
