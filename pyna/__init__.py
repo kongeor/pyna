@@ -24,8 +24,14 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import db
-    db.init_app(app)
+    from .database import init_db, db_session
+    init_db()
+
+    from .models import Headline
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db_session.remove()
 
     from . import fetcher
     fetcher.init_app(app)
@@ -37,8 +43,7 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        d = db.get_db()
-        headlines = d.execute('SELECT * FROM headlines order by published_at_ts desc')
+        headlines = Headline.query.all()
         return render_template('index.html', headlines = headlines)
 
     return app
