@@ -36,6 +36,13 @@ def create_app(test_config=None):
     from . import fetcher
     fetcher.init_app(app)
 
+    @app.route('/api/fetch-headlines')
+    def fetch_headlines():
+        # TODO security
+        # overcome single thread sqlite limitation
+        fetcher.fetch_headlines()
+        return "ok"
+
     # a simple page that says hello
     @app.route('/hello')
     def hello():
