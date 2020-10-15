@@ -4,21 +4,22 @@ from flask.cli import with_appcontext
 from datetime import datetime
 from dotenv import load_dotenv
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 from sqlalchemy.sql.expression import func
 
 from .database import db_session
 from .models import Source, Headline
 
+# Fetcher
+
 def date_to_ts(date_str):
 	d = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
 	return int(d.timestamp())
 
 
-@click.command('fetch-hl')
-@with_appcontext
 def fetch_headlines():
-
 	news_api_keys = os.getenv('NEWS_API_KEY')
 
 	r = requests.get('https://newsapi.org/v2/top-headlines?country=gr&pageSize=30&apiKey=%s' % (news_api_keys))
@@ -60,5 +61,23 @@ def fetch_headlines():
 		# commit on each iteration to make sure Source is inserted
 		db_session.commit()
 
+@click.command('fetch-hl')
+@with_appcontext
+def fetch_headlines_cmd():
+	fetch_headlines()
+
+# Scheduler
+
+sched = BackgroundScheduler(daemon=True)
+
+sched.start()
+
+atexit.register(lambda: sched.shutdown())
+
+def poke_api():
+	requests.get("http://localhost:5000/api/fetch-headlines")
+
 def init_app(app):
-    app.cli.add_command(fetch_headlines)
+	# poke_api()
+	sched.add_job(poke_api, 'cron', minute="*/15")
+	app.cli.add_command(fetch_headlines_cmd)
