@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 def create_app(test_config=None):
     # create and configure the app
@@ -48,9 +48,16 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
+    page_size = 10
+
     @app.route('/')
     def index():
-        headlines = Headline.query.all()
-        return render_template('index.html', headlines = headlines)
+        page = request.args.get('page')
+        page = page or 1
+        page = int(page)
+        start = (page - 1) * page_size
+        end = start + page_size
+        headlines = Headline.query.slice(start, end)
+        return render_template('index.html', headlines = headlines, page = page)
 
     return app

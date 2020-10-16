@@ -28,7 +28,7 @@ class Headline(Base):
         self.url = url
         self.url_to_image = url_to_image
         self.published_at_ts = published_at_ts
-        self.published_at = published_at_ts
+        self.published_at = published_at
         self.content = content
 
     def __repr__(self):

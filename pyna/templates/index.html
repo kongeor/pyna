@@ -1,17 +1,49 @@
-<!doctype html>
-<title>News</title>
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <title>news - cons</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/chota">
+  <!-- for dev -->
+  <!-- <link rel="stylesheet" href="./dist/chota.css"> -->
+  <!-- <link rel="stylesheet" href="./doc-styles.css"> -->
+  <!-- <link rel="icon" type="image/png" href="favicon.png" /> -->
+</head>
 
 
-<h1>News</h1>
+<div class="container">
+  <h1>News</h1>
 
-{% for headline in headlines %}
-	<div class="headline">
-		<h2>{{ headline.title }}</h2>
-		<div>{{ headline.published_at }}</div>
-		{% if headline.description %}
-		<div class="description">{{ headline.description }}</div>
-		{% endif %}
-		<a href="{{ headline.url }} ">link</a>
-		<hr>
-	</div>
-{% endfor %}
+  <section id="headlines">
+    {% for headline in headlines %}
+    <div class="headline">
+      <h2>{{ headline.title }}</h2>
+      <div>{{ headline.published_at }}</div>
+      {% if headline.description %}
+      <div class="description">{{ headline.description }}</div>
+      {% endif %}
+      <a href="{{ headline.url }}" target="_blank">link</a>
+      <hr>
+    </div>
+    {% endfor %}
+  </section>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <a class="button success is-center" href="/?page={{ page + 1}}">mext</a>
+    </div>
+  </div>
+  <br>
+  <footer class="text-center">
+    <p><a href="#top">🔝 Back to top</a> &bull; <a href="https://github.com/kongeor/pyna">🐛 Report an issue</a></p>
+    <h5>Built with Flask</h5>
+    <h5>Powered by <a href="https://newsapi.org/">newsapi.org</a></h5>
+  </footer>
+</div>
+
+</body>
+
+</html>
