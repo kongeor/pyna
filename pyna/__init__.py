@@ -2,6 +2,24 @@ import os
 
 from flask import Flask, render_template, request
 
+from logging.config import dictConfig
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -40,6 +58,7 @@ def create_app(test_config=None):
     def fetch_headlines():
         # TODO security
         # overcome single thread sqlite limitation
+        app.logger.info("fetching headlines")
         fetcher.fetch_headlines()
         return "ok"
 
@@ -57,6 +76,7 @@ def create_app(test_config=None):
         page = int(page)
         start = (page - 1) * page_size
         end = start + page_size
+        app.logger.info("loading headlines page %s from %s to %s", page, start, end)
         headlines = Headline.query.slice(start, end)
         return render_template('index.html', headlines = headlines, page = page)
 
