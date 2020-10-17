@@ -77,7 +77,7 @@ def create_app(test_config=None):
         start = (page - 1) * page_size
         end = start + page_size
         app.logger.info("loading headlines page %s from %s to %s", page, start, end)
-        headlines = Headline.query.slice(start, end)
+        headlines = Headline.query.order_by(Headline.published_at_ts.desc()).slice(start, end)
         return render_template('index.html', headlines = headlines, page = page)
 
     return app
