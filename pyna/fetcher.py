@@ -87,5 +87,5 @@ def poke_api():
 
 def init_app(app):
 	# poke_api()
-	sched.add_job(poke_api, 'cron', minute="*/5")
+	sched.add_job(poke_api, 'cron', minute="*/15")
 	app.cli.add_command(fetch_headlines_cmd)
